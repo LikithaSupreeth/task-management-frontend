@@ -18,7 +18,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
-function SignUp() {
+function Register() {
     const [form, setForm] = useState({
         firstName: '',
         lastName: '',
@@ -153,4 +153,4 @@ function SignUp() {
     );
 }
 
-export default SignUp;
+export default Register;
