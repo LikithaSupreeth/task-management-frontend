@@ -1,7 +1,7 @@
 export default function Home(){
-    return(
+    return (
         <div>
-            <h2>Home component</h2>
+            <h2>Home</h2>
         </div>
     )
 }
