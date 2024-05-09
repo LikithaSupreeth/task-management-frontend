@@ -12,6 +12,7 @@ import Link from '@mui/material/Link';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import loginValidations from '../validations/LoginValidations';
 import { useState } from 'react';
 
 // import FormControlLabel from '@mui/material/FormControlLabel';
@@ -47,15 +48,33 @@ export default function Login() {
         email: '',
         password: ''
     })
-
+    const [errors,setErrors] = useState({})
+    const [touched,setTouched] = useState(false)
+    
     const handleChange = (e)=>{
         const {name, value} = e.target
         setForm({...form, [name]: value})
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async(e) => {
         e.preventDefault()
-        console.log(form)
+        setTouched(true)
+        try{
+            await loginValidations.validate(form,{abortEarly:false})
+            console.log('validation success:',form)
+            setErrors({})
+
+        }
+        catch (err){
+            const formErrors = err.inner.reduce((acc,curr) => {
+                acc[curr.path] = curr.message
+                return acc
+            },{})
+
+        
+        setErrors(formErrors)
+        console.log('validate Errors',formErrors)
+        }
     };
 
     return (
@@ -88,6 +107,9 @@ export default function Login() {
                             autoFocus
                             value={form.email}
                             onChange={handleChange}
+                            error ={touched && !!errors.email}
+                            helperText = {(touched && errors.email) || 'This field is required'}
+                            FormHelperTextProps={{ style: { color: 'red' } }}
                         />
                         <TextField
                             margin="normal"
@@ -100,6 +122,9 @@ export default function Login() {
                             autoComplete="current-password"
                             value={form.password}
                             onChange={handleChange}
+                            error ={touched && !!errors.email}
+                            helperText = {(touched && errors.email) || '*This field is required'}
+                            FormHelperTextProps={{ style: { color: 'red' } }}
                         />
                         <Button
                             type="submit"

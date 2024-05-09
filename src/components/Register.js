@@ -15,6 +15,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import registrationValidations from '../validations/RegisterValidations';
 
 // import FormControlLabel from '@mui/material/FormControlLabel';
 // import Checkbox from '@mui/material/Checkbox';
@@ -40,15 +41,28 @@ function Register() {
         role: ''
     });
 
+    const[errors,setErrors] = useState({})
+    const [touched,setTouched] = useState(false)
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setForm({ ...form, [name]: value });
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        console.log(form); // This will log the form data when submitted
-        // You can add further logic here, like sending the data to an API
+        setTouched(true)
+        try{
+            await registrationValidations.validate(form,{abortEarly:false})
+            console.log('Validation Success:',form)
+            setErrors({})
+        } catch(err){
+            const formErrors = err.inner.reduce((acc,curr) => {
+               return {...acc,[curr.path]:curr.message}
+            },{})
+            setErrors(formErrors)
+            console.log('validation errors:',formErrors)
+        }
     };
 
     return (
@@ -82,6 +96,9 @@ function Register() {
                                     autoFocus
                                     value={form.firstName}
                                     onChange={handleChange}
+                                    error ={touched && !!errors.email}
+                                    helperText = {(touched && errors.email) || '*This field is required'}
+                                    FormHelperTextProps={{ style: { color: 'red' } }}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6}>
@@ -94,6 +111,9 @@ function Register() {
                                     autoComplete="family-name"
                                     value={form.lastName}
                                     onChange={handleChange}
+                                    error ={touched && !!errors.email}
+                                    helperText = {(touched && errors.email) || '*This field is required'}
+                                    FormHelperTextProps={{ style: { color: 'red' } }}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -106,6 +126,9 @@ function Register() {
                                     autoComplete="email"
                                     value={form.email}
                                     onChange={handleChange}
+                                    error ={touched && !!errors.email}
+                                    helperText = {(touched && errors.email) || '*This field is required'}
+                                    FormHelperTextProps={{ style: { color: 'red' } }}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -119,6 +142,9 @@ function Register() {
                                     autoComplete="new-password"
                                     value={form.password}
                                     onChange={handleChange}
+                                    error ={touched && !!errors.email}
+                                    helperText = {(touched && errors.email) || '*This field is required'}
+                                    FormHelperTextProps={{ style: { color: 'red' } }}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -134,6 +160,9 @@ function Register() {
                                         inputProps={{ 'aria-label': 'Without label' }}
                                         value={form.role}
                                         onChange={handleChange}
+                                        error ={touched && !!errors.email}
+                                        helperText = {(touched && errors.email) || '*This field is required'}
+                                        FormHelperTextProps={{ style: { color: 'red' } }}
                                     >
                                         <MenuItem value="">
                                             <em></em>
