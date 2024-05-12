@@ -109,7 +109,7 @@ export default function Login() {
                             onChange={handleChange}
                             error ={touched && !!errors.email}
                             helperText = {(touched && errors.email) || 'This field is required'}
-                            FormHelperTextProps={{ style: { color: 'red' } }}
+                            // FormHelperTextProps={{ style: { color: 'red' } }}
                         />
                         <TextField
                             margin="normal"
@@ -122,9 +122,9 @@ export default function Login() {
                             autoComplete="current-password"
                             value={form.password}
                             onChange={handleChange}
-                            error ={touched && !!errors.email}
-                            helperText = {(touched && errors.email) || '*This field is required'}
-                            FormHelperTextProps={{ style: { color: 'red' } }}
+                            error ={touched && !!errors.password}
+                            helperText = {(touched && errors.password) || '*This field is required'}
+                            // FormHelperTextProps={{ style: { color: 'red' } }}
                         />
                         <Button
                             type="submit"
@@ -141,7 +141,7 @@ export default function Login() {
                                 </Link>
                             </Grid>
                             <Grid item>
-                                <Link href="#" variant="body2">
+                                <Link href="/register" variant="body2">
                                     {"Don't have an account? Sign Up"}
                                 </Link>
                             </Grid>

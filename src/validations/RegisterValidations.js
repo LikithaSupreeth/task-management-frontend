@@ -15,8 +15,8 @@ const registrationValidations = Yup.object({
 
   password: Yup.string()
     .required("password is required")
-    .min(8, "Password must be at least 8 characters long"),
-
+    .min(8, "Password must be at least 8 characters long")
+    .matches(/^(?=.*[A-Z])(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])(?=.*[0-9]).*$/, 'Password needs uppercase, symbol, & number.'),
   role: Yup.string()
     .required("role is required")
     .oneOf(["Employee", "TeamLead"], "Invalid role selected"),

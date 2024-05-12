@@ -1,38 +1,16 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-
-import Avatar from '@mui/material/Avatar';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Container from '@mui/material/Container';
-import CssBaseline from '@mui/material/CssBaseline';
-import FormControl from '@mui/material/FormControl';
-import Grid from '@mui/material/Grid';
-import InputLabel from '@mui/material/InputLabel';
-import Link from '@mui/material/Link';
+import { Avatar, Box, Button, Container, CssBaseline, FormControl, Grid, InputLabel, Link, MenuItem, Select, TextField, Typography } from '@mui/material'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
+
 import registrationValidations from '../validations/RegisterValidations';
 
-// import FormControlLabel from '@mui/material/FormControlLabel';
-// import Checkbox from '@mui/material/Checkbox';
-
-
-
-
-
-
-
-
-
-// import FormHelperText from '@mui/material/FormHelperText';
-
-
-
 function Register() {
+
+    const navigate = useNavigate()
+
     const [form, setForm] = useState({
         firstName: '',
         lastName: '',
@@ -41,8 +19,8 @@ function Register() {
         role: ''
     });
 
-    const[errors,setErrors] = useState({})
-    const [touched,setTouched] = useState(false)
+    const [errors, setErrors] = useState({})
+    const [touched, setTouched] = useState(false)
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -52,16 +30,21 @@ function Register() {
     const handleSubmit = async (event) => {
         event.preventDefault();
         setTouched(true)
-        try{
-            await registrationValidations.validate(form,{abortEarly:false})
-            console.log('Validation Success:',form)
+        try {
+            await registrationValidations.validate(form, { abortEarly: false })
+            console.log('Validation Success:', form)
             setErrors({})
-        } catch(err){
-            const formErrors = err.inner.reduce((acc,curr) => {
-               return {...acc,[curr.path]:curr.message}
-            },{})
+            const {data}= await axios.post('http://localhost:3456/users/register', form)
+            console.log(data)
+            navigate('/login')
+        } catch (err) {
+            const formErrors = err.inner.reduce((acc, curr) => {
+                return { ...acc, [curr.path]: curr.message }
+            }, {})
             setErrors(formErrors)
-            console.log('validation errors:',formErrors)
+            console.log('validation errors:', formErrors)
+
+
         }
     };
 
@@ -96,9 +79,9 @@ function Register() {
                                     autoFocus
                                     value={form.firstName}
                                     onChange={handleChange}
-                                    error ={touched && !!errors.email}
-                                    helperText = {(touched && errors.email) || '*This field is required'}
-                                    FormHelperTextProps={{ style: { color: 'red' } }}
+                                    error={touched && !!errors.firstName}
+                                    helperText={(touched && errors.firstName) || '*This field is required'}
+                                    // FormHelperTextProps={{ style: { color: 'red' } }}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6}>
@@ -111,9 +94,9 @@ function Register() {
                                     autoComplete="family-name"
                                     value={form.lastName}
                                     onChange={handleChange}
-                                    error ={touched && !!errors.email}
-                                    helperText = {(touched && errors.email) || '*This field is required'}
-                                    FormHelperTextProps={{ style: { color: 'red' } }}
+                                    error={touched && !!errors.lastName}
+                                    helperText={(touched && errors.lastName) || '*This field is required'}
+                                    // FormHelperTextProps={{ style: { color: 'red' } }}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -126,9 +109,9 @@ function Register() {
                                     autoComplete="email"
                                     value={form.email}
                                     onChange={handleChange}
-                                    error ={touched && !!errors.email}
-                                    helperText = {(touched && errors.email) || '*This field is required'}
-                                    FormHelperTextProps={{ style: { color: 'red' } }}
+                                    error={touched && !!errors.email}
+                                    helperText={(touched && errors.email) || '*This field is required'}
+                                    // FormHelperTextProps={{ style: { color: 'red' } }}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -142,9 +125,9 @@ function Register() {
                                     autoComplete="new-password"
                                     value={form.password}
                                     onChange={handleChange}
-                                    error ={touched && !!errors.email}
-                                    helperText = {(touched && errors.email) || '*This field is required'}
-                                    FormHelperTextProps={{ style: { color: 'red' } }}
+                                    error={touched && !!errors.password}
+                                    helperText={(touched && errors.password) || '*This field is required'}
+                                    // FormHelperTextProps={{ style: { color: 'red' } }}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -160,9 +143,9 @@ function Register() {
                                         inputProps={{ 'aria-label': 'Without label' }}
                                         value={form.role}
                                         onChange={handleChange}
-                                        error ={touched && !!errors.email}
-                                        helperText = {(touched && errors.email) || '*This field is required'}
-                                        FormHelperTextProps={{ style: { color: 'red' } }}
+                                        error={touched && !!errors.role}
+                                        // helperText={(touched && errors.role) || '*This field is required'}
+                                        // FormHelperTextProps={{ style: { color: 'red' } }}
                                     >
                                         <MenuItem value="">
                                             <em></em>
@@ -183,7 +166,7 @@ function Register() {
                         </Button>
                         <Grid container justifyContent="center">
                             <Grid item>
-                                <Link href="#" variant="body2">
+                                <Link href="/login" variant="body2">
                                     Already have an account? Sign in
                                 </Link>
                             </Grid>
