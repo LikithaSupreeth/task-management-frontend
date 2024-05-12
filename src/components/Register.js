@@ -72,7 +72,7 @@ function Register() {
                     })
                 })
             } else {
-                toast.error('An error occurred during registration.', {
+                toast.error('PLease fill-up all the details', {
                     position: "top-center",
                     autoClose: 5000,
                     hideProgressBar: false,
