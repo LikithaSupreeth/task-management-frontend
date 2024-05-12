@@ -4,8 +4,14 @@ import axios from 'axios';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { Avatar, Box, Button, Container, CssBaseline, FormControl, Grid, InputLabel, Link, MenuItem, Select, TextField, Typography } from '@mui/material'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-
 import registrationValidations from '../validations/RegisterValidations';
+import { Zoom, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
+
+
+
 
 function Register() {
 
@@ -19,7 +25,8 @@ function Register() {
         role: ''
     });
 
-    const [errors, setErrors] = useState({})
+    const [clientErrors, setClientErrors] = useState({})
+    // const [serverErrors, setServerErrors] = useState({})
     const [touched, setTouched] = useState(false)
 
     const handleChange = (e) => {
@@ -33,18 +40,57 @@ function Register() {
         try {
             await registrationValidations.validate(form, { abortEarly: false })
             console.log('Validation Success:', form)
-            setErrors({})
-            const {data}= await axios.post('http://localhost:3456/users/register', form)
-            console.log(data)
+            setClientErrors({})
+
+            const response = await axios.post('http://localhost:3456/users/register', form)
+            console.log(response.data)
             navigate('/login')
+
+
         } catch (err) {
-            const formErrors = err.inner.reduce((acc, curr) => {
-                return { ...acc, [curr.path]: curr.message }
-            }, {})
-            setErrors(formErrors)
-            console.log('validation errors:', formErrors)
 
+            const frontendErrors = err.inner ? err.inner.reduce((acc, cv) => {
+                acc[cv.path] = cv.message
+                return acc
+            }, {}) : {}
+            console.log("frontend", frontendErrors)
+            setClientErrors(frontendErrors)
 
+            //backend Errors
+            if (err.response && err.response.data && err.response.data.errors && err.response.data.errors.length > 0) {
+                err.response.data.errors.map(error => {
+                    toast.error(error.msg, {
+                        position: "top-center",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "light",
+                        // transition: Bounce,
+                    })
+                })
+            } else {
+                toast.error('An error occurred during registration.', {
+                    position: "top-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                    transition: Zoom,
+                });
+            }
+
+            // const formErrors = err.inner.reduce((acc, curr) => {
+            //     return { ...acc, [curr.path]: curr.message }
+            // }, {})
+
+            // setClientErrors(formErrors)
+            // console.log('validation clientErrors:', formErrors)
         }
     };
 
@@ -79,9 +125,9 @@ function Register() {
                                     autoFocus
                                     value={form.firstName}
                                     onChange={handleChange}
-                                    error={touched && !!errors.firstName}
-                                    helperText={(touched && errors.firstName) || '*This field is required'}
-                                    // FormHelperTextProps={{ style: { color: 'red' } }}
+                                    error={touched && !!clientErrors.firstName}
+                                    helperText={(touched && clientErrors.firstName) || '*This field is required'}
+                                // FormHelperTextProps={{ style: { color: 'red' } }}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6}>
@@ -94,9 +140,9 @@ function Register() {
                                     autoComplete="family-name"
                                     value={form.lastName}
                                     onChange={handleChange}
-                                    error={touched && !!errors.lastName}
-                                    helperText={(touched && errors.lastName) || '*This field is required'}
-                                    // FormHelperTextProps={{ style: { color: 'red' } }}
+                                    error={touched && !!clientErrors.lastName}
+                                    helperText={(touched && clientErrors.lastName) || '*This field is required'}
+                                // FormHelperTextProps={{ style: { color: 'red' } }}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -109,9 +155,9 @@ function Register() {
                                     autoComplete="email"
                                     value={form.email}
                                     onChange={handleChange}
-                                    error={touched && !!errors.email}
-                                    helperText={(touched && errors.email) || '*This field is required'}
-                                    // FormHelperTextProps={{ style: { color: 'red' } }}
+                                    error={touched && !!clientErrors.email}
+                                    helperText={(touched && clientErrors.email) || '*This field is required'}
+                                // FormHelperTextProps={{ style: { color: 'red' } }}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -125,9 +171,9 @@ function Register() {
                                     autoComplete="new-password"
                                     value={form.password}
                                     onChange={handleChange}
-                                    error={touched && !!errors.password}
-                                    helperText={(touched && errors.password) || '*This field is required'}
-                                    // FormHelperTextProps={{ style: { color: 'red' } }}
+                                    error={touched && !!clientErrors.password}
+                                    helperText={(touched && clientErrors.password) || '*This field is required'}
+                                // FormHelperTextProps={{ style: { color: 'red' } }}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -143,9 +189,9 @@ function Register() {
                                         inputProps={{ 'aria-label': 'Without label' }}
                                         value={form.role}
                                         onChange={handleChange}
-                                        error={touched && !!errors.role}
-                                        // helperText={(touched && errors.role) || '*This field is required'}
-                                        // FormHelperTextProps={{ style: { color: 'red' } }}
+                                        error={touched && !!clientErrors.role}
+                                    // helperText={(touched && clientErrors.role) || '*This field is required'}
+                                    // FormHelperTextProps={{ style: { color: 'red' } }}
                                     >
                                         <MenuItem value="">
                                             <em></em>
