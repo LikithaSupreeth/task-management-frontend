@@ -10,9 +10,6 @@ import 'react-toastify/dist/ReactToastify.css';
 
 
 
-
-
-
 function Register() {
 
     const navigate = useNavigate()
@@ -31,6 +28,18 @@ function Register() {
         const { name, value } = e.target;
         setForm({ ...form, [name]: value });
     };
+
+    const toastStyle = {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Zoom,
+    }
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -57,30 +66,10 @@ function Register() {
             //backend Errors
             if (err.response && err.response.data && err.response.data.errors && err.response.data.errors.length > 0) {
                 err.response.data.errors.map(error => {
-                    toast.error(error.msg, {
-                        position: "top-center",
-                        autoClose: 5000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                        theme: "light",
-                        // transition: Bounce,
-                    })
+                    toast.error(error.msg, toastStyle)
                 })
             } else {
-                toast.error('Please fill-up all the details', {
-                    position: "top-center",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                    transition: Zoom,
-                });
+                toast.error('Please fill-up all the details', toastStyle);
             }
 
             // const formErrors = err.inner.reduce((acc, curr) => {

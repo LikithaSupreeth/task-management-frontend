@@ -1,5 +1,5 @@
 import * as React from 'react';
-
+import { useNavigate } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { Avatar, Box, Button, Container, CssBaseline, Grid, Link, TextField, Typography } from '@mui/material'
 import axios from 'axios';
@@ -9,39 +9,17 @@ import loginValidations from '../validations/LoginValidations';
 import { useState } from 'react';
 import { toast, Zoom } from 'react-toastify';
 
-// import FormControlLabel from '@mui/material/FormControlLabel';
-// import Checkbox from '@mui/material/Checkbox';
-
-
-
-
-
-
-
-
-function Copyright(props) {
-    return (
-        <Typography variant="body2" color="text.secondary" align="center" {...props}>
-            {'Copyright © '}
-            <Link color="inherit" href="https://mui.com/">
-                Your Website
-            </Link>{' '}
-            {new Date().getFullYear()}
-            {'.'}
-        </Typography>
-    );
-}
-
-// TODO remove, this demo shouldn't need to reset the theme.
 
 const defaultTheme = createTheme();
 
 export default function Login() {
+    const navigate = useNavigate()
 
     const [form, setForm] = useState({
         email: '',
         password: ''
     })
+
     const [clientErrors, setClientErrors] = useState({})
     const [touched, setTouched] = useState(false)
 
@@ -50,18 +28,28 @@ export default function Login() {
         setForm({ ...form, [name]: value })
     }
 
+    const toastStyle = {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Zoom,
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault()
         setTouched(true)
         try {
             await loginValidations.validate(form, { abortEarly: false })
-            // console.log('validation success:', form)
             setClientErrors({})
             const response = await axios.post('http://localhost:3456/users/login', form)
             localStorage.setItem("token", response.data.token)
-
+            navigate("/Home")
         } catch (err) {
-
             const frontendErrors = err.inner ? err.inner.reduce((acc, cv) => {
                 acc[cv.path] = cv.message
                 return acc
@@ -69,32 +57,11 @@ export default function Login() {
             setClientErrors(frontendErrors)
 
             //backend Errors
-            // console.log(err)
             if (err.response && err.response.data && err.response.data.errors && err.response.data.errors.length > 0) {
                 const errorMessage = err.response.data.errors
-                toast.error(errorMessage, {
-                    position: "top-center",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                    transition: Zoom,
-                })
+                toast.error(errorMessage, toastStyle)
             } else {
-                toast.error('Please fill-up all the details', {
-                    position: "top-center",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                    transition: Zoom,
-                });
+                toast.error('Please fill-up all the details', toastStyle);
             }
         }
     };
@@ -170,7 +137,6 @@ export default function Login() {
                         </Grid>
                     </Box>
                 </Box>
-                <Copyright sx={{ mt: 8, mb: 4 }} />
             </Container>
         </ThemeProvider>
     );
