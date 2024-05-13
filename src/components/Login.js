@@ -1,8 +1,8 @@
 import * as React from 'react';
 import axios from 'axios';
 import { useState } from 'react';
-
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import { ThemeProvider, createTheme, Avatar, Box, Button, Container, CssBaseline, Grid, Link, TextField, Typography } from '@mui/material'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import loginValidations from '../validations/LoginValidations';
@@ -12,7 +12,9 @@ import { toast, Zoom } from 'react-toastify';
 const defaultTheme = createTheme();
 
 export default function Login() {
+
     const navigate = useNavigate()
+    const { handleLogin } = useAuth()
 
     const [form, setForm] = useState({
         email: '',
@@ -45,10 +47,20 @@ export default function Login() {
         try {
             await loginValidations.validate(form, { abortEarly: false })
             setClientErrors({})
+
             const response = await axios.post('http://localhost:3456/users/login', form)
             localStorage.setItem("token", response.data.token)
+
+            const userResponse = await axios.get('http://localhost:3456/users/account', {
+                headers: {
+                    Authorization: localStorage.getItem('token')
+                }
+            })
+            handleLogin(userResponse.data)
             navigate("/")
+
         } catch (err) {
+            
             const frontendErrors = err.inner ? err.inner.reduce((acc, cv) => {
                 acc[cv.path] = cv.message
                 return acc
