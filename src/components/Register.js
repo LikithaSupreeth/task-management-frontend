@@ -24,9 +24,7 @@ function Register() {
         password: '',
         role: ''
     });
-
     const [clientErrors, setClientErrors] = useState({})
-    // const [serverErrors, setServerErrors] = useState({})
     const [touched, setTouched] = useState(false)
 
     const handleChange = (e) => {
@@ -72,7 +70,7 @@ function Register() {
                     })
                 })
             } else {
-                toast.error('PLease fill-up all the details', {
+                toast.error('Please fill-up all the details', {
                     position: "top-center",
                     autoClose: 5000,
                     hideProgressBar: false,

@@ -1,19 +1,13 @@
 import * as React from 'react';
 
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { Avatar, Box, Button, Container, CssBaseline, Grid, Link, TextField, Typography } from '@mui/material'
+import axios from 'axios';
 
-import Avatar from '@mui/material/Avatar';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Container from '@mui/material/Container';
-import CssBaseline from '@mui/material/CssBaseline';
-import Grid from '@mui/material/Grid';
-import Link from '@mui/material/Link';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
 import loginValidations from '../validations/LoginValidations';
 import { useState } from 'react';
+import { toast, Zoom } from 'react-toastify';
 
 // import FormControlLabel from '@mui/material/FormControlLabel';
 // import Checkbox from '@mui/material/Checkbox';
@@ -48,32 +42,60 @@ export default function Login() {
         email: '',
         password: ''
     })
-    const [errors,setErrors] = useState({})
-    const [touched,setTouched] = useState(false)
-    
-    const handleChange = (e)=>{
-        const {name, value} = e.target
-        setForm({...form, [name]: value})
+    const [clientErrors, setClientErrors] = useState({})
+    const [touched, setTouched] = useState(false)
+
+    const handleChange = (e) => {
+        const { name, value } = e.target
+        setForm({ ...form, [name]: value })
     }
 
-    const handleSubmit = async(e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
         setTouched(true)
-        try{
-            await loginValidations.validate(form,{abortEarly:false})
-            console.log('validation success:',form)
-            setErrors({})
+        try {
+            await loginValidations.validate(form, { abortEarly: false })
+            // console.log('validation success:', form)
+            setClientErrors({})
+            const response = await axios.post('http://localhost:3456/users/login', form)
+            localStorage.setItem("token", response.data.token)
 
-        }
-        catch (err){
-            const formErrors = err.inner.reduce((acc,curr) => {
-                acc[curr.path] = curr.message
+        } catch (err) {
+
+            const frontendErrors = err.inner ? err.inner.reduce((acc, cv) => {
+                acc[cv.path] = cv.message
                 return acc
-            },{})
+            }, {}) : {}
+            setClientErrors(frontendErrors)
 
-        
-        setErrors(formErrors)
-        console.log('validate Errors',formErrors)
+            //backend Errors
+            // console.log(err)
+            if (err.response && err.response.data && err.response.data.errors && err.response.data.errors.length > 0) {
+                const errorMessage = err.response.data.errors
+                toast.error(errorMessage, {
+                    position: "top-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                    transition: Zoom,
+                })
+            } else {
+                toast.error('Please fill-up all the details', {
+                    position: "top-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                    transition: Zoom,
+                });
+            }
         }
     };
 
@@ -107,9 +129,9 @@ export default function Login() {
                             autoFocus
                             value={form.email}
                             onChange={handleChange}
-                            error ={touched && !!errors.email}
-                            helperText = {(touched && errors.email) || 'This field is required'}
-                            // FormHelperTextProps={{ style: { color: 'red' } }}
+                            error={touched && !!clientErrors.email}
+                            helperText={(touched && clientErrors.email) || 'This field is required'}
+                        // FormHelperTextProps={{ style: { color: 'red' } }}
                         />
                         <TextField
                             margin="normal"
@@ -122,9 +144,9 @@ export default function Login() {
                             autoComplete="current-password"
                             value={form.password}
                             onChange={handleChange}
-                            error ={touched && !!errors.password}
-                            helperText = {(touched && errors.password) || '*This field is required'}
-                            // FormHelperTextProps={{ style: { color: 'red' } }}
+                            error={touched && !!clientErrors.password}
+                            helperText={(touched && clientErrors.password) || '*This field is required'}
+                        // FormHelperTextProps={{ style: { color: 'red' } }}
                         />
                         <Button
                             type="submit"
