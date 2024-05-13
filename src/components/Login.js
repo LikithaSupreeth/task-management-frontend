@@ -60,7 +60,7 @@ export default function Login() {
             navigate("/")
 
         } catch (err) {
-            
+
             const frontendErrors = err.inner ? err.inner.reduce((acc, cv) => {
                 acc[cv.path] = cv.message
                 return acc

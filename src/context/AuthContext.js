@@ -10,7 +10,7 @@ export const AuthProvider = ({ children }) => {
     
     const [user, setUser] = useState(null)
 
-    const handleLogin = () => {
+    const handleLogin = (user) => {
         setUser(user)
     }
 
