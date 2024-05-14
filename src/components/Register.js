@@ -65,7 +65,7 @@ function Register() {
 
             //backend Errors
             if (err.response && err.response.data && err.response.data.errors && err.response.data.errors.length > 0) {
-                err.response.data.errors.map(error => {
+                err.response.data.errors.forEach(error => {
                     toast.error(error.msg, toastStyle)
                 })
             } else {
