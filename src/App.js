@@ -2,12 +2,29 @@ import Home from "./components/Home"
 import Login from "./components/Login"
 import Register from "./components/Register"
 import Account from "./components/Account"
-import { useAuth} from "./context/AuthContext"
+import { useAuth } from "./context/AuthContext"
 import { Link, Route, Routes } from "react-router-dom"
+import { useEffect } from "react"
+import axios from "axios"
 
 export default function App() {
 
-  const { user , handleLogout} = useAuth()
+  const { user, handleLogin, handleLogout } = useAuth()
+
+  useEffect(() => {
+    if (localStorage.getItem('token')) {
+      
+      (async () => {
+        const response = await axios.get('http://localhost:3456/users/account', {
+          headers: {
+            Authorization: localStorage.getItem('token')
+          }
+        })
+        handleLogin(response.data)
+      })()
+      
+    }
+  }, [])
 
   return (
     <div>
@@ -21,7 +38,7 @@ export default function App() {
       ) : (
         <>
           <Link to="/account">Account</Link> |
-          <Link to="/" onClick={()=>{
+          <Link to="/" onClick={() => {
             localStorage.removeItem('token')
             handleLogout()
           }}>Logout</Link>
@@ -33,7 +50,7 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/account" element={<Account/>}></Route>
+        <Route path="/account" element={<Account />}></Route>
       </Routes>
     </div>
   )
