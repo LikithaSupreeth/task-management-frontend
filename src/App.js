@@ -2,6 +2,7 @@ import Home from "./components/Home"
 import Login from "./components/Login"
 import Register from "./components/Register"
 import Account from "./components/Account"
+import PrivateRoute from "./components/PrivateRoute"
 import { useAuth } from "./context/AuthContext"
 import { Link, Route, Routes } from "react-router-dom"
 import { useEffect } from "react"
@@ -13,7 +14,7 @@ export default function App() {
 
   useEffect(() => {
     if (localStorage.getItem('token')) {
-      
+
       (async () => {
         const response = await axios.get('http://localhost:3456/users/account', {
           headers: {
@@ -22,7 +23,7 @@ export default function App() {
         })
         handleLogin(response.data)
       })()
-      
+
     }
   }, [])
 
@@ -45,12 +46,11 @@ export default function App() {
         </>
       )}
 
-
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/account" element={<Account />}></Route>
+        <Route path="/account" element={<PrivateRoute> <Account /> </PrivateRoute>}></Route>
       </Routes>
     </div>
   )
