@@ -1,12 +1,14 @@
+import { Link, Route, Routes } from "react-router-dom"
+
+import Account from "./components/Account"
+import Dashboard from "./components/Dashboard"
 import Home from "./components/Home"
 import Login from "./components/Login"
 import Register from "./components/Register"
 import Account from "./components/Account"
 import PrivateRoute from "./components/PrivateRoute"
-import { useAuth } from "./context/AuthContext"
+import { useAuth} from "./context/AuthContext"
 import { Link, Route, Routes } from "react-router-dom"
-import { useEffect } from "react"
-import axios from "axios"
 
 export default function App() {
 
