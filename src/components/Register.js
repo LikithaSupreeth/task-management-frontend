@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { Avatar, Box, Button, Container, CssBaseline, FormControl, Grid, InputLabel, Link, MenuItem, Select, TextField, Typography } from '@mui/material'
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import registrationValidations from '../validations/RegisterValidations';
-import { Zoom, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+import { Avatar, Box, Button, Container, CssBaseline, FormControl, Grid, InputLabel, Link, MenuItem, Select, TextField, Typography } from '@mui/material'
+import React, { useState } from 'react';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { Zoom, toast } from 'react-toastify';
 
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import axios from 'axios';
+import registrationValidations from '../validations/RegisterValidations';
+import { useNavigate } from 'react-router-dom';
 
 function Register() {
 
@@ -177,7 +177,7 @@ function Register() {
                                         value={form.role}
                                         onChange={handleChange}
                                         error={touched && !!clientErrors.role}
-                                    // helperText={(touched && clientErrors.role) || '*This field is required'}
+                                    helperText={(touched && clientErrors.role) || '*This field is required'}
                                     // FormHelperTextProps={{ style: { color: 'red' } }}
                                     >
                                         <MenuItem value="">

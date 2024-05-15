@@ -5,9 +5,9 @@ import Dashboard from "./components/Dashboard"
 import Home from "./components/Home"
 import Login from "./components/Login"
 import Register from "./components/Register"
-import Account from "./components/Account"
-import { useAuth} from "./context/AuthContext"
-import { Link, Route, Routes } from "react-router-dom"
+import axios from "axios"
+import { useAuth } from "./context/AuthContext"
+import { useEffect } from "react"
 
 export default function App() {
 
@@ -40,6 +40,8 @@ export default function App() {
       ) : (
         <>
           <Link to="/account">Account</Link> |
+          <Link to = "/dashboard">Dashboard</Link> |
+          
           <Link to="/" onClick={() => {
             localStorage.removeItem('token')
             handleLogout()
@@ -53,6 +55,7 @@ export default function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/account" element={<Account/>}></Route>
+        <Route path="/dashboard" element={<Dashboard/>} />
       </Routes>
     </div>
   )
