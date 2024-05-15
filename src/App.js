@@ -1,13 +1,14 @@
-import { Link, Route, Routes } from "react-router-dom"
-
+import React from "react"
+import { useEffect } from "react"
+import axios from "axios"
 import Account from "./components/Account"
 import Dashboard from "./components/Dashboard"
 import Home from "./components/Home"
 import Login from "./components/Login"
 import Register from "./components/Register"
-import axios from "axios"
-import { useAuth } from "./context/AuthContext"
-import { useEffect } from "react"
+import Account from "./components/Account"
+import { useAuth} from "./context/AuthContext"
+import { Link, Route, Routes } from "react-router-dom"
 
 export default function App() {
 
@@ -15,7 +16,7 @@ export default function App() {
 
   useEffect(() => {
     if (localStorage.getItem('token')) {
-      
+
       (async () => {
         const response = await axios.get('http://localhost:3456/users/account', {
           headers: {
@@ -24,7 +25,7 @@ export default function App() {
         })
         handleLogin(response.data)
       })()
-      
+
     }
   }, [])
 
@@ -49,13 +50,11 @@ export default function App() {
         </>
       )}
 
-
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/account" element={<Account/>}></Route>
-        <Route path="/dashboard" element={<Dashboard/>} />
       </Routes>
     </div>
   )
