@@ -1,131 +1,13 @@
-// import { Avatar, Box, Button, Container, CssBaseline, FormControl, Grid, InputLabel, Link, MenuItem, Select, TextField, Typography } from '@mui/material'
-// import React, { useState } from 'react';
-// import { ThemeProvider, createTheme } from '@mui/material/styles';
-// import { Zoom, toast } from 'react-toastify';
-
-// import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-// import axios from 'axios';
-// import { useNavigate } from 'react-router-dom';
-
-// const TaskForm = () => {
-//   const navigate = useNavigate()
-
-//   const[form,setForm] = useState({
-//     title: '',
-//     description: '',
-//     Priority:'', 
-//     status: '',
-//     dueDate: '',
-//     assignedUserId: '',
-//     userId: ''
-//   })
-
-
-//   const [clientErrors,setClientErrors] = useState()
-//   const [touched,setTouched] = useState(false)
-
-//   const handleChange = (e) => {
-//     const { name, value } = e.target;
-//     setForm({ ...form, [name]: value });
-// };
-
-//   const toastStyle = {
-//     position: "top-center",
-//     autoClose: 5000,
-//     hideProgressBar: false,
-//     closeOnClick: true,
-//     pauseOnHover: true,
-//     draggable: true,
-//     progress: undefined,
-//     theme: "light",
-//     transition: Zoom,
-// }
-
-// const handleCreate = async(event) =>{
-//   event.preventDefault()
-//   setTouched(true)
-//   try{
-//     const response = await axios.post('http://localhost:3456/task/create',form)
-//     console.log(response.data)
-//     navigate('/taskForm')
-//   }catch (err) {
-
-//     const frontendErrors = err.inner ? err.inner.reduce((acc, cv) => {
-//         acc[cv.path] = cv.message
-//         return acc
-//     }, {}) : {}
-//     console.log("frontend", frontendErrors)
-//     setClientErrors(frontendErrors)
-
-
-//     if (err.response && err.response.data && err.response.data.errors && err.response.data.errors.length > 0) {
-//         err.response.data.errors.forEach(error => {
-//             toast.error(error.msg, toastStyle)
-//         })
-//       } else {
-//         toast.error('Please fill-up all the details', toastStyle);
-//       }
-//     }
-//   }
-
-//   return (
-//     <ThemeProvider theme ={createTheme()}>
-//       <Container component="main" maxWidth ="xs">
-//         <CssBaseline/>
-//         <Box
-//           sx={{
-//             marginTop: 8,
-//             display: 'flex',
-//             flexDirection: 'column',
-//             alignItems: 'left',
-//           }}
-//           >
-//              <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-//                         <LockOutlinedIcon />
-//                     </Avatar>
-//                     <Typography component="h1" variant="h5">
-//                         Add Task
-//                     </Typography>
-//                   <Box component ="form" noValidate onSubmit={handleCreate} sx={{mt:3}}>
-//                     <Grid container spacing={2}>
-//                       <Grid item xs ={12} sm={6}>
-//                         <TextField
-//                         autoComplete='given-name'
-//                         name='title'
-//                         required
-//                         fullWidth
-//                         id="title"
-//                         label="title"
-//                         autoFocus
-//                         value={form.title}
-//                         onChange={handleChange}
-//                         error={touched && !!clientErrors.title}
-//                         helperText={(touched && clientErrors.title) || "*Thi field is required"}
-//                         />
-              
-//                       </Grid>
-//                     </Grid>
-//                   </Box>
-//           </Box>
-
-//       </Container>
-
-//     </ThemeProvider>
-//   );
-// }
-
-// export default TaskForm;
-
 import 'react-toastify/dist/ReactToastify.css';
 
-import {Avatar, Box, Button, Container, CssBaseline, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Typography,} from '@mui/material';
+import { Avatar, Box, Button, Container, CssBaseline, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { ToastContainer, Zoom, toast } from 'react-toastify';
 
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import axios from 'axios';
-import { taskValidations } from '../../validations/TaskValidations';
+import { taskValidations } from '../../validations/TaskValidations'
 import { useNavigate } from 'react-router-dom';
 
 const TaskForm = ({ userRole }) => {
@@ -176,7 +58,7 @@ const TaskForm = ({ userRole }) => {
       const response = await axios.post('http://localhost:3456/task/create', form);
       console.log(response.data);
       toast.success('Task created successfully!', toastStyle);
-      navigate('/taskForm');
+      navigate('/dashboard/taskList');
     } catch (err) {
       const frontendErrors = err.inner ? err.inner.reduce((acc, cv) => {
         acc[cv.path] = cv.message;
@@ -324,4 +206,3 @@ const TaskForm = ({ userRole }) => {
 };
 
 export default TaskForm;
-

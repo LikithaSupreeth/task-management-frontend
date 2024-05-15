@@ -1,4 +1,4 @@
-import { Container, Grid, Paper } from '@mui/material';
+import { Container, Grid, Link as MuiLink, Paper } from '@mui/material';
 import { Link, Route, Routes } from "react-router-dom"
 
 import React from 'react';
@@ -12,21 +12,22 @@ const Dashboard = () => {
         <Grid item xs={12}>
           <Paper>
             {/* <TaskForm /> */}
-            <Link to = "/taskForm">TaskForm</Link>
+            {/* <Link to = "/dashboard/taskForm">TaskForm</Link> */}
+            <MuiLink component={Link} to="/dashboard/taskForm">TaskForm</MuiLink>
           </Paper>
         </Grid>
-        <Grid item xs={30}>
+        <Grid item xs={12}>
           <Paper>
             {/* <TaskList /> */}
-            <Link to = "/taskList">TaskList</Link>
+            <Link to = "/dashboard/taskList">TaskList</Link>
           </Paper>
         </Grid>
       </Grid>
     </Container>
   )}
   <Routes>
-    <Route path='/taskList'element={<TaskList/>} />
-    <Route path='/taskForm'element={<TaskForm/>} />
+     <Route path="taskForm" element={<TaskForm userRole="teamlead" />} />
+      <Route path="taskList" element={<TaskList />} />
   </Routes>
 
 
