@@ -5,11 +5,28 @@ import Dashboard from "./components/Dashboard"
 import Home from "./components/Home"
 import Login from "./components/Login"
 import Register from "./components/Register"
-import { useAuth } from "./context/AuthContext"
+import Account from "./components/Account"
+import { useAuth} from "./context/AuthContext"
+import { Link, Route, Routes } from "react-router-dom"
 
 export default function App() {
 
-  const { user , handleLogout} = useAuth()
+  const { user, handleLogin, handleLogout } = useAuth()
+
+  useEffect(() => {
+    if (localStorage.getItem('token')) {
+      
+      (async () => {
+        const response = await axios.get('http://localhost:3456/users/account', {
+          headers: {
+            Authorization: localStorage.getItem('token')
+          }
+        })
+        handleLogin(response.data)
+      })()
+      
+    }
+  }, [])
 
   return (
     <div>
@@ -23,7 +40,7 @@ export default function App() {
       ) : (
         <>
           <Link to="/account">Account</Link> |
-          <Link to="/" onClick={()=>{
+          <Link to="/" onClick={() => {
             localStorage.removeItem('token')
             handleLogout()
           }}>Logout</Link>
@@ -35,8 +52,7 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/account" element={<Account/>} />
-        <Route path="/dashboard" element ={<Dashboard/>} />
+        <Route path="/account" element={<Account/>}></Route>
       </Routes>
     </div>
   )
