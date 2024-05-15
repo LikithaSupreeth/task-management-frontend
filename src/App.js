@@ -41,6 +41,7 @@ export default function App() {
       ) : (
         <>
           <Link to="/account">Account</Link> |
+          <Link to = "/dashboard">Dashboard</Link> |
           <Link to="/" onClick={() => {
             localStorage.removeItem('token')
             handleLogout()
@@ -52,6 +53,7 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/dashboard" element={<PrivateRoute> <Dashboard /> </PrivateRoute>} />
         <Route path="/account" element={<PrivateRoute> <Account /> </PrivateRoute>}></Route>
       </Routes>
     </div>
