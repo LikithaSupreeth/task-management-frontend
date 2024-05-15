@@ -1,9 +1,11 @@
+import { Link, Route, Routes } from "react-router-dom"
+
+import Account from "./components/Account"
+import Dashboard from "./components/Dashboard"
 import Home from "./components/Home"
 import Login from "./components/Login"
 import Register from "./components/Register"
-import Account from "./components/Account"
-import { useAuth} from "./context/AuthContext"
-import { Link, Route, Routes } from "react-router-dom"
+import { useAuth } from "./context/AuthContext"
 
 export default function App() {
 
@@ -33,7 +35,8 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/account" element={<Account/>}></Route>
+        <Route path="/account" element={<Account/>} />
+        <Route path="/dashboard" element ={<Dashboard/>} />
       </Routes>
     </div>
   )
