@@ -3,7 +3,7 @@ import { Navigate } from "react-router-dom";
 
 export default function PrivateRoute({ permittedRoles, children }) {
     const { user } = useAuth()
-    console.log(user);
+    // console.log(user);
 
     if(!user && localStorage.getItem('token')){
         return <p>loading...</p>

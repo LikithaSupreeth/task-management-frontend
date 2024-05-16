@@ -4,27 +4,51 @@ import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
 import { Typography, Box, Paper, Button, Table, TableBody, TableCell, TableHead, TableRow, Stack } from '@mui/material';
+// import { Assignment } from '@mui/icons-material';
 
 
 export default function Dashboard() {
 
   const { user } = useAuth()
   const [task, setTask] = useState([])
+  const [userDetails, setUserDetails] = useState({})
 
   useEffect(() => {
-    (async () => {
-      const response = await axios.get('http://localhost:3456/tasks', {
+    const getTask = async () => {
+      const response = await axios.get("http://localhost:3456/tasks", {
         headers: {
           Authorization: localStorage.getItem('token')
         }
       })
       setTask(response.data)
 
-    })()
+      let userIds
+      if (user.role === "TeamLead") {
+        userIds = response.data.map(ele => ele.assignedUserId)
+      } if ((user.role === "Employee")) {
+        userIds = response.data.map(ele => ele.userId)
+      }
+
+
+      const userModel = await Promise.all(userIds.map(async (ele) => {
+        const response = await axios.get(`http://localhost:3456/users/${ele}`, {
+          headers: {
+            Authorization: localStorage.getItem('token')
+          }
+        })
+        return { [ele]: response.data }
+      }))
+
+      const userObject = userModel.reduce((acc, cv) => ({
+        ...acc, ...cv
+      }), {})
+      setUserDetails(userObject)
+    }
+    getTask()
+
   }, [])
-
-  console.log(task)
-
+  
+  console.log(userDetails)
   return (
     <>
       <Box sx={{
@@ -43,7 +67,7 @@ export default function Dashboard() {
                   <TableCell>Task</TableCell>
                   <TableCell>Details</TableCell>
                   <TableCell>Finish Date</TableCell>
-                  <TableCell>Assigned By</TableCell>
+                  <TableCell>{user.role === "TeamLead" ? ("Assigned To") : ("Assigned By")}</TableCell>
                   <TableCell>Priority</TableCell>
                   <TableCell align="right">Status</TableCell>
                 </TableRow>
@@ -54,7 +78,7 @@ export default function Dashboard() {
                     <TableCell>{ele.title}</TableCell>
                     <TableCell>{ele.description}</TableCell>
                     <TableCell>{ele.dueDate}</TableCell>
-                    <TableCell>todo name fetching</TableCell>
+                    <TableCell>{user.role === "TeamLead" ? (userDetails[ele.assignedUserId]?.firstName) : (userDetails[ele.userId]?.firstName)}</TableCell>
                     <TableCell>{ele.priority}</TableCell>
                     <TableCell align="right">{ele.status}</TableCell>
                   </TableRow>

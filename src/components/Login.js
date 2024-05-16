@@ -55,7 +55,7 @@ export default function Login() {
             const userResponse = await axios.get('http://localhost:3456/users/account', {
                 headers: {
                     Authorization: localStorage.getItem('token')
-                }
+                  }
             })
             handleLogin(userResponse.data)
             navigate("/")
