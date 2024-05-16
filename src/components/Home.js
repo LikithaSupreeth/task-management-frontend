@@ -5,8 +5,8 @@ export default function Home() {
     const { user } = useAuth()
     return (
         <div>
-            {user&& <h2>Welcome {user.firstName}</h2>}
-            {user && <Dashboard/>}
+            {user && <h2>Welcome {user.firstName}</h2>}
+            {user && <Dashboard />}
         </div>
     )
 }
