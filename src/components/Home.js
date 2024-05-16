@@ -1,11 +1,12 @@
 import { useAuth } from "../context/AuthContext"
+import Dashboard from "./Dashboard"
 
 export default function Home() {
     const { user } = useAuth()
     return (
         <div>
-            <h2>Home</h2>
-            {user && <p>Welcome {user.firstName}</p>}
+            {user&& <h2>Welcome {user.firstName}</h2>}
+            {user && <Dashboard/>}
         </div>
     )
 }

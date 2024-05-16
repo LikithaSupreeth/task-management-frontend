@@ -6,7 +6,8 @@ import Home from "./components/Home"
 import Login from "./components/Login"
 import React from "react"
 import Register from "./components/Register"
-import TaskForm from "./components/Tasks/TaskForm"
+import TaskForm from "./components/TaskForm"
+import Unauthorized from "./components/Unauthorized"
 import PrivateRoute from "./components/PrivateRoute"
 import axios from "axios"
 import { useAuth } from "./context/AuthContext"
@@ -43,7 +44,7 @@ export default function App() {
       ) : (
         <>
           <Link to="/account">Account</Link> |
-          <Link to = "/dashboard">Dashboard</Link> |          
+          <Link to="/dashboard">Dashboard</Link> |
           <Link to="/" onClick={() => {
             localStorage.removeItem('token')
             handleLogout()
@@ -55,8 +56,10 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/dashboard" element={<PrivateRoute> <Dashboard /> </PrivateRoute>} />
-        <Route path="/account" element={<PrivateRoute> <Account /> </PrivateRoute>}></Route>
+        <Route path="/taskForm" element={<TaskForm />} />
+        <Route path="/unauthorized" element={<Unauthorized />} />
+        <Route path="/dashboard" element={<PrivateRoute permittedRoles={['TeamLead', 'Employee']}> <Dashboard /> </PrivateRoute>} />
+        <Route path="/account" element={<PrivateRoute permittedRoles={['TeamLead','Employee']}> <Account /> </PrivateRoute>}></Route>
       </Routes>
     </div>
   )

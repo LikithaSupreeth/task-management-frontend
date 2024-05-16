@@ -4,13 +4,14 @@ import { Avatar, Box, Button, Container, CssBaseline, FormControl, Grid, InputLa
 import React, { useState } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { ToastContainer, Zoom, toast } from 'react-toastify';
-
+import { useAuth } from '../context/AuthContext';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import axios from 'axios';
-import { taskValidations } from '../../validations/TaskValidations'
+import { taskValidations } from '../validations/TaskValidations'
 import { useNavigate } from 'react-router-dom';
 
-const TaskForm = ({ userRole }) => {
+const TaskForm = () => {
+  const { user } = useAuth()
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
@@ -50,7 +51,7 @@ const TaskForm = ({ userRole }) => {
     try {
       await taskValidations.validate(form, { abortEarly: false });
 
-      if (userRole !== 'teamlead') {
+      if (user.role !== 'TeamLead') {
         toast.error('Only team leads can create tasks.', toastStyle);
         return;
       }
