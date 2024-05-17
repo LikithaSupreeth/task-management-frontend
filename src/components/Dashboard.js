@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
 import { Typography, Box, Paper, Button, Table, TableBody, TableCell, TableHead, TableRow, Stack } from '@mui/material';
+import { toast, Zoom } from 'react-toastify';
 // import { Assignment } from '@mui/icons-material';
 
 
@@ -11,44 +12,35 @@ export default function Dashboard() {
 
   const { user } = useAuth()
   const [task, setTask] = useState([])
-  const [userDetails, setUserDetails] = useState({})
+
+  const toastStyle = {
+    position: "top-center",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    transition: Zoom,
+  }
 
   useEffect(() => {
-    const getTask = async () => {
-      const response = await axios.get("http://localhost:3456/tasks", {
-        headers: {
-          Authorization: localStorage.getItem('token')
-        }
-      })
-      setTask(response.data)
-
-      let userIds
-      if (user.role === "TeamLead") {
-        userIds = response.data.map(ele => ele.assignedUserId)
-      } if ((user.role === "Employee")) {
-        userIds = response.data.map(ele => ele.userId)
-      }
-
-
-      const userModel = await Promise.all(userIds.map(async (ele) => {
-        const response = await axios.get(`http://localhost:3456/users/${ele}`, {
+    (async () => {
+      try {
+        const response = await axios.get("http://localhost:3456/tasks", {
           headers: {
             Authorization: localStorage.getItem('token')
           }
         })
-        return { [ele]: response.data }
-      }))
-
-      const userObject = userModel.reduce((acc, cv) => ({
-        ...acc, ...cv
-      }), {})
-      setUserDetails(userObject)
-    }
-    getTask()
-
+        setTask(response.data)
+      } catch (err) {
+        toast.error('Unable to Fetch Task For You', toastStyle)
+      }
+    })()
   }, [])
-  
-  console.log(userDetails)
+
+  console.log(task)
   return (
     <>
       <Box sx={{
@@ -78,7 +70,7 @@ export default function Dashboard() {
                     <TableCell>{ele.title}</TableCell>
                     <TableCell>{ele.description}</TableCell>
                     <TableCell>{ele.dueDate}</TableCell>
-                    <TableCell>{user.role === "TeamLead" ? (userDetails[ele.assignedUserId]?.firstName) : (userDetails[ele.userId]?.firstName)}</TableCell>
+                    <TableCell>{user.role === "TeamLead" ? `${ele.assignedUserId.firstName}  ${ele.assignedUserId.lastName}` : `${ele.userId.firstName}  ${ele.userId.lastName}`}</TableCell>
                     <TableCell>{ele.priority}</TableCell>
                     <TableCell align="right">{ele.status}</TableCell>
                   </TableRow>
